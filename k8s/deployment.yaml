@@ -16,6 +16,8 @@ spec:
     spec:
       containers:
         - name: harness-app
+          # Use your Docker Hub image, e.g. YOUR_DOCKERHUB_USER/harness-app:latest
+          # For Minikube with local image: harness-app:latest and imagePullPolicy: IfNotPresent
           image: harness-app:latest
           imagePullPolicy: IfNotPresent
           ports:

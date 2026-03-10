@@ -35,28 +35,56 @@ docker run -p 8080:8080 harness-app:latest
 
 ## Deploy on Kubernetes
 
-1. Build the image. For **Minikube**: `eval $(minikube docker-env)` then build so the cluster can use the image. For a **remote cluster**, push to your registry and set the image in `k8s/deployment.yaml`.
+**Prerequisites:** `kubectl` installed and a cluster (Minikube, Kind, GKE, EKS, AKS, etc.).
 
-   ```bash
-   docker build -t harness-app:latest .
-   # For a real cluster, tag and push, then set image in k8s/deployment.yaml:
-   # docker tag harness-app:latest your-registry/harness-app:latest
-   # docker push your-registry/harness-app:latest
+### Option A: Using the image from Docker Hub
+
+1. **Set the image** in `k8s/deployment.yaml` to your Docker Hub image:
+
+   ```yaml
+   image: YOUR_DOCKERHUB_USER/harness-app:latest
+   imagePullPolicy: Always
    ```
 
-2. Apply the manifests:
+2. **Apply the manifests:**
 
    ```bash
    kubectl apply -f k8s/
    ```
 
-3. Expose the service (optional, for access from outside the cluster):
+3. **Check that the app is running:**
 
    ```bash
-   kubectl port-forward svc/harness-app 8080:80
+   kubectl get pods -l app=harness-app
+   kubectl get svc harness-app
    ```
 
-   Then open http://localhost:8080
+4. **Access the app** (choose one):
+
+   - **Port-forward** (quick test from your machine):
+     ```bash
+     kubectl port-forward svc/harness-app 8080:80
+     ```
+     Then open http://localhost:8080
+
+   - **LoadBalancer** (for cloud clusters): change `type: ClusterIP` to `type: LoadBalancer` in `k8s/service.yaml`, then `kubectl get svc harness-app` to get the external IP.
+
+### Option B: Using a local image (e.g. Minikube)
+
+1. Point your shell at the cluster’s Docker so the image is built inside the cluster:
+   ```bash
+   eval $(minikube docker-env)   # Minikube
+   # or: kind export docker-env  # Kind
+   docker build -t harness-app:latest .
+   ```
+
+2. In `k8s/deployment.yaml` keep:
+   ```yaml
+   image: harness-app:latest
+   imagePullPolicy: IfNotPresent
+   ```
+
+3. Deploy and access as in Option A (steps 2–4).
 
 ## Endpoints
 
