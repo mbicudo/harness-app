@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     """Home page."""
-    return {"message": "Hello from Harness App", "status": "ok"}
+    return {"message": "This is my app content API response", "status": "ok"}
 
 
 @app.route("/health")
