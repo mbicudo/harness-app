@@ -11,6 +11,15 @@ python app.py
 
 Then open http://localhost:8080
 
+## Run tests
+
+```bash
+pip install -r requirements-dev.txt
+python3 -m pytest
+```
+
+For CI (JUnit XML report): `python3 -m pytest --junitxml=test-results.xml`
+
 ## Build and run with Docker
 
 ```bash
