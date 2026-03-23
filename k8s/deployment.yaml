@@ -5,7 +5,7 @@ metadata:
   labels:
     app: harness-app
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: harness-app
@@ -17,9 +17,9 @@ spec:
       containers:
         - name: harness-app
           # Use your Docker Hub image, e.g. YOUR_DOCKERHUB_USER/harness-app:latest
-          # For Minikube with local image: harness-app:latest and imagePullPolicy: IfNotPresent
-          image: harness-app:latest
-          imagePullPolicy: IfNotPresent
+          # imagePullPolicy: Always required for multi-replica; IfNotPresent only safe for single-node (e.g. Minikube)
+          image: mddb/harness-app:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           livenessProbe:
